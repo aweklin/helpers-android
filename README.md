@@ -36,7 +36,6 @@ import com.aweklin.helpers.HttpHelper;
 
 Then, consume your service using the code below:
 ```
-HttpHelper.Response sample = new HttpHelper().request(this, HttpHelper.RequestType.get, "yourapiurl", null, true, "Loading stuff, please wait...").get();
 try {
     HttpHelper.Response sample = new HttpHelper().request(this, HttpHelper.RequestType.get, "yourapiurl", null, true, "Loading stuff, please wait...").get();
     if (sample.isSuccessful) {
