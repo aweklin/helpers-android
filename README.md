@@ -1,7 +1,6 @@
 # Helpers-Android
 HTTP REST api call wrapper. It Initiates a new HTTP (REST) request with the given URL [and parameters in case of POST]"
 
-
 ## _The HttpHelper_
 
 ### Description
@@ -37,7 +36,9 @@ import com.aweklin.helpers.HttpHelper;
 Then, consume your service using the code below:
 ```
 try {
-    HttpHelper.Response sample = new HttpHelper().request(this, HttpHelper.RequestType.get, "yourapiurl", null, true, "Loading stuff, please wait...").get();
+    List<NameValuePair> headers = new ArrayList<>(1);
+    headers.add(new BasicNameValuePair("Authorization", "your-api-authorization-key"));
+    HttpHelper.Response sample = new HttpHelper().request(this, HttpHelper.RequestType.get, "yourapiurl", headers, null, true, "Loading stuff, please wait...").get();
     if (sample.isSuccessful) {
         // do anything you want here        
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
@@ -50,3 +51,10 @@ try {
     Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
 }
 ```
+
+### Change Log
+##### v0.1.1:   2018-07-04
+> Added new **headers** parameters to the request method. This will enable you pass custom header keys/values as required by your API.
+
+##### v0.1.0:   2018-07-04
+> First release
