@@ -34,8 +34,8 @@ public class HttpHelper {
         post
     }
 
-    public AsyncTask<String, Void, Response> request(Context context, RequestType requestType, String url, List<NameValuePair> parameters, Boolean showLoader, String loadingText) {
-        return new RequestTask(context, requestType, url, parameters, showLoader, loadingText).execute("");
+    public AsyncTask<String, Void, Response> request(Context context, RequestType requestType, String url, List<NameValuePair> headers, List<NameValuePair> parameters, Boolean showLoader, String loadingText) {
+        return new RequestTask(context, requestType, url, headers, parameters, showLoader, loadingText).execute("");
     }
 
 
@@ -47,13 +47,15 @@ public class HttpHelper {
         private String url;
         private List<NameValuePair> parameters;
         private ProgressDialog progressDialog;
+        private List<NameValuePair> headers;
 
-        public RequestTask(Context context, RequestType requestType, String url, List<NameValuePair> parameters, Boolean showLoader, String loadingText) {
+        public RequestTask(Context context, RequestType requestType, String url, List<NameValuePair> headers, List<NameValuePair> parameters, Boolean showLoader, String loadingText) {
             this.requestType = requestType;
             this.url = url;
             this.parameters = parameters;
             this.showLoader = showLoader;
             this.loadingText = loadingText;
+            this.headers = headers;
             if (showLoader) {
                 this.progressDialog = new ProgressDialog(context);
             }
@@ -71,11 +73,23 @@ public class HttpHelper {
                     httpGet.addHeader("Content-Type", "application/json");
                     httpGet.addHeader("Accept", "application/json");
 
+                    if (headers != null) {
+                        for (int i = 0; i < headers.size(); i++) {
+                            httpGet.addHeader(headers.get(i).getName(), headers.get(i).getValue());
+                        }
+                    }
+
                     httpResponse = httpClient.execute(httpGet);
                 } else {
                     HttpPost httpPost = new HttpPost(this.url);
                     httpPost.addHeader("Content-Type", "application/json");
                     httpPost.addHeader("Accept", "application/json");
+
+                    if (headers != null) {
+                        for (int i = 0; i < headers.size(); i++) {
+                            httpPost.addHeader(headers.get(i).getName(), headers.get(i).getValue());
+                        }
+                    }
 
                     httpPost.setEntity(new UrlEncodedFormEntity(parameters, "UTF-8"));
                     httpResponse = httpClient.execute(httpPost);
