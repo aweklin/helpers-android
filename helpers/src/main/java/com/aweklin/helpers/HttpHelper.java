@@ -21,7 +21,11 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
@@ -34,7 +38,7 @@ public class HttpHelper {
         post
     }
 
-    public AsyncTask<String, Void, Response> request(Context context, RequestType requestType, String url, List<NameValuePair> headers, List<NameValuePair> parameters, Boolean showLoader, String loadingText) {
+    public AsyncTask<String, Void, Response> request(Context context, RequestType requestType, String url, List<NameValuePair> headers, String parameters, Boolean showLoader, String loadingText) {
         return new RequestTask(context, requestType, url, headers, parameters, showLoader, loadingText).execute("");
     }
 
@@ -45,11 +49,11 @@ public class HttpHelper {
         private String loadingText;
         private RequestType requestType;
         private String url;
-        private List<NameValuePair> parameters;
+        private String parameters;
         private ProgressDialog progressDialog;
         private List<NameValuePair> headers;
 
-        public RequestTask(Context context, RequestType requestType, String url, List<NameValuePair> headers, List<NameValuePair> parameters, Boolean showLoader, String loadingText) {
+        public RequestTask(Context context, RequestType requestType, String url, List<NameValuePair> headers, String parameters, Boolean showLoader, String loadingText) {
             this.requestType = requestType;
             this.url = url;
             this.parameters = parameters;
@@ -64,10 +68,19 @@ public class HttpHelper {
         @Override
         protected Response doInBackground(String... url) {
             Response serverResponse = new Response();
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpResponse httpResponse;
 
             try {
+                HttpResponse httpResponse;
+
+                int timeoutSocket = 20000;
+                int timeoutConnection = 20000;
+
+                HttpParams httpParams = new BasicHttpParams();
+                HttpConnectionParams.setConnectionTimeout(httpParams, timeoutSocket);
+                HttpConnectionParams.setSoTimeout(httpParams, timeoutConnection);
+
+                HttpClient httpClient = new DefaultHttpClient(httpParams);
+
                 if (requestType == RequestType.get) {
                     HttpGet httpGet = new HttpGet(this.url);
                     httpGet.addHeader("Content-Type", "application/json");
@@ -91,7 +104,7 @@ public class HttpHelper {
                         }
                     }
 
-                    httpPost.setEntity(new UrlEncodedFormEntity(parameters, "UTF-8"));
+                    httpPost.setEntity(new StringEntity(parameters, "UTF-8"));
                     httpResponse = httpClient.execute(httpPost);
                 }
 
