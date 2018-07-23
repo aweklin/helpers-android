@@ -81,6 +81,8 @@ String loadingText
 ```
 
 ### Change Log
+##### v0.1.3:   2018-07-23
+> Added support for API level 19 by changing the minSdkVersion in the gradle file.
 ##### v0.1.2:   2018-07-05
 > Added socket and connection timeout.
 
