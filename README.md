@@ -22,7 +22,7 @@ allprojects {
 #### Step 2: Add the dependency
 ``` 
 dependencies {
-    implementation 'com.github.aweklin:helpers-android:0.1.2'
+    implementation 'com.github.aweklin:helpers-android:0.1.4'
 }
 ```
 
@@ -55,6 +55,7 @@ try {
 ###### POST
 ```
 try {
+    String parameters = "{\"name\": \"test\"}";
     HttpHelper.Response response = new HttpHelper().request(this, HttpHelper.RequestType.post, "your_api_url", null, parameters, true, "Processing...").get();
     if (response.isSuccessful) {
         final JSONObject data = new JSONObject(response.data.toString());
@@ -81,6 +82,9 @@ String loadingText
 ```
 
 ### Change Log
+##### v0.1.3:   2018-07-23
+> Added support for API level 19 by changing the minSdkVersion in the gradle file.
+
 ##### v0.1.2:   2018-07-05
 > Added socket and connection timeout.
 
